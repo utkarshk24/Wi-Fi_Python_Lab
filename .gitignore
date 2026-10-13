@@ -1,0 +1,9 @@
+# Generated output and vendored runtime (rebuild with: python3 build.py)
+build/
+pkg/
+pyodide-*.tgz
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.env

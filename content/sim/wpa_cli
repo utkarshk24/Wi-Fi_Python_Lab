@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+"""Fake wpa_cli: prints what the real tool prints for a station connected to a 6 GHz AP."""
+import sys
+
+args = sys.argv[1:]
+if args[:1] == ["-i"]:
+    iface, args = args[1], args[2:]
+else:
+    iface = "wlan0"
+cmd = args[0] if args else ""
+OUT = {
+    "status": f"""bssid=3c:84:6a:12:34:60
+freq=6135
+ssid=lab-6g
+id=0
+mode=station
+wifi_generation=6
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=SAE
+wpa_state=COMPLETED
+ip_address=192.168.100.57
+address=02:00:00:00:01:00
+uuid=6e5d2c1a-1111-2222-3333-444455556666
+ieee80211ac=1""",
+    "signal_poll": """RSSI=-52
+LINKSPEED=1201
+NOISE=-92
+FREQUENCY=6135
+WIDTH=160 MHz
+CENTER_FRQ1=6185""",
+    "scan_results": """bssid / frequency / signal level / flags / ssid
+3c:84:6a:12:34:60\t6135\t-52\t[WPA3-SAE-CCMP][ESS]\tlab-6g
+3c:84:6a:12:34:56\t5180\t-49\t[WPA2-PSK-CCMP][WPA3-SAE-CCMP][ESS]\tlab-5g
+3c:84:6a:12:34:57\t2437\t-61\t[WPA2-PSK-CCMP][ESS]\tlab-2g
+9e:11:22:33:44:55\t5745\t-78\t[ESS]\tguest
+de:ad:be:ef:00:01\t2412\t-83\t[WPA2-PSK-CCMP][ESS]\t""",
+    "reassociate": "OK",
+    "disconnect": "OK",
+    "ping": "PONG",
+}
+if cmd == "select_network":
+    print("OK" if args[1:] == ["0"] else "FAIL")
+    sys.exit(0)
+if cmd not in OUT:
+    print(f"Unknown command '{cmd}'")
+    sys.exit(1)
+print(OUT[cmd])

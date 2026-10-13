@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""Fake hostapd_cli for an AP radio with two associated stations."""
+import sys
+
+args = sys.argv[1:]
+if args[:1] == ["-i"]:
+    args = args[2:]
+cmd = " ".join(args)
+if cmd == "status":
+    print("""state=ENABLED
+phy=phy1
+freq=6135
+num_sta_non_erp=0
+channel=37
+ieee80211n=1
+ieee80211ac=1
+ieee80211ax=1
+he_oper_chwidth=2
+he_oper_centr_freq_seg0_idx=47
+ssid[0]=lab-6g
+bssid[0]=3c:84:6a:12:34:60
+num_sta[0]=2""")
+elif cmd == "all_sta":
+    print("""02:00:00:00:01:00
+flags=[AUTH][ASSOC][AUTHORIZED][WMM][HE]
+aid=1
+signal=-52
+rx_rate_info=19215 he-mcs 9 he-nss 2
+tx_rate_info=24019 he-mcs 11 he-nss 2
+connected_time=3412
+02:00:00:00:02:00
+flags=[AUTH][ASSOC][AUTHORIZED][WMM][HE]
+aid=2
+signal=-71
+rx_rate_info=5764 he-mcs 5 he-nss 1
+tx_rate_info=7206 he-mcs 6 he-nss 1
+connected_time=118""")
+elif cmd.startswith("deauthenticate "):
+    print("OK")
+else:
+    print(f"Unknown command '{cmd}'")
+    sys.exit(1)
